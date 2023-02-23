@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\API\v1\LogsController;
+
+use App\Http\Controllers\CRM\v1\AuthController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +15,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Log data
-Route::post('/signup/procform', [ LogsController::class, 'index' ]);
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
 
+Route::group(['auth:cms'], function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/refresh', [AuthController::class, 'refresh']);
+    Route::get('/user-profile', [AuthController::class, 'userProfile']);
+});
