@@ -5,7 +5,7 @@
    - FROM php:8.4-fpm
    - FROM mysql:8.0
    - FROM phpMyAdmin
-   - Laravel 13
+   - Laravel v10.50.2 (PHP v8.4.21)
 
 ## Project Installation
 
