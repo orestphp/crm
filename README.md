@@ -50,6 +50,16 @@ If your docker project lives at - ***/var/www/crm*** (linux)
    * `sudo chown -R $USER:www-data storage bootstrap/cache`
    * `sudo chmod -R 775 storage bootstrap/cache`
 
+- cd app: php artisan tinker
+ * `$adminRole = Spatie\Permission\Models\Role::create(['name' => 'admin']);`
+ * `$managerRole = Spatie\Permission\Models\Role::create(['name' => 'manager']);`
+ * `$admin = App\Models\User::create([
+   'name' => 'Admin',
+   'email' => 'admin@admin.com',
+   'password' => Hash::make('your_password')
+   ]);`
+ * `$admin->assignRole($adminRole);`
+
 ## app
 http://127.0.0.1:8080/
 
