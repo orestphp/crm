@@ -1,0 +1,10 @@
+app/.env
+app/storage/*.key
+app/storage/framework/cache/data/*
+app/storage/framework/sessions/*
+app/storage/framework/views/*
+app/storage/logs/*.log
+app/bootstrap/cache/*.php
+
+**/node_modules/
+app/public/build/
