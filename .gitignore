@@ -8,3 +8,22 @@ app/bootstrap/cache/*.php
 
 **/node_modules/
 app/public/build/
+
+app/.phpunit.cache
+app/node_modules
+app/public/build
+app/public/hot
+app/public/storage
+app/storage/media
+app/vendor
+app/.env.backup
+app/.env.production
+app/.phpunit.result.cache
+app/Homestead.json
+app/Homestead.yaml
+app/auth.json
+app/npm-debug.log
+app/yarn-error.log
+/.fleet
+/.idea
+/.vscode

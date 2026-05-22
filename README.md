@@ -38,28 +38,21 @@ $ make init
 ```
 $ make up
 ```
+- From the ***/var/www/crm/app*** directory:
+    * `sudo chown -R $USER:www-data storage bootstrap/cache`
+    * `sudo chmod -R 775 storage bootstrap/cache`
 
-If your docker project lives at - ***/var/www/crm*** (linux)
-- in CLI from there:
-   * `docker exec -it crm-app-1 chown -R www-data:www-data storage bootstrap/cache`
+- From the ***/var/www/crm*** directory:
    * `docker exec -it crm-app-1 composer install`
    * `docker exec -it crm-app-1 php artisan key:generate`
    * `docker exec -it crm-app-1 php artisan migrate`
+   * `docker exec -it crm-app-1 php artisan seed`
 
- - .. or from the /var/www/crm/app directory:
-   * `sudo chown -R $USER:www-data storage bootstrap/cache`
-   * `sudo chmod -R 775 storage bootstrap/cache`
-
-- cd app: php artisan tinker
- * `$adminRole = Spatie\Permission\Models\Role::create(['name' => 'admin']);`
- * `$managerRole = Spatie\Permission\Models\Role::create(['name' => 'manager']);`
- * `$admin = App\Models\User::create([
-   'name' => 'Admin',
-   'email' => 'admin@admin.com',
-   'password' => Hash::make('your_password')
-   ]);`
- * `$admin->assignRole($adminRole);`
-
+- From the ***/var/www/crm/app*** directory:
+   * `npm install & npm run dev`
+   * Admin: admin@admin.com password
+   * Manager: user@user.com password (all registered users are managers)
+    
 ## app
 http://127.0.0.1:8080/
 
