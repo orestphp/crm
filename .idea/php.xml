@@ -138,6 +138,8 @@
       <path value="$PROJECT_DIR$/app/vendor/spatie/laravel-medialibrary" />
       <path value="$PROJECT_DIR$/app/vendor/spatie/image-optimizer" />
       <path value="$PROJECT_DIR$/app/vendor/maennchen/zipstream-php" />
+      <path value="$PROJECT_DIR$/app/vendor/giggsey/libphonenumber-for-php-lite" />
+      <path value="$PROJECT_DIR$/app/vendor/propaganistas/laravel-phone" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.0">

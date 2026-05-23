@@ -144,6 +144,8 @@
       <excludeFolder url="file://$MODULE_DIR$/app/vendor/spatie/laravel-medialibrary" />
       <excludeFolder url="file://$MODULE_DIR$/app/vendor/spatie/image-optimizer" />
       <excludeFolder url="file://$MODULE_DIR$/app/vendor/maennchen/zipstream-php" />
+      <excludeFolder url="file://$MODULE_DIR$/app/vendor/giggsey/libphonenumber-for-php-lite" />
+      <excludeFolder url="file://$MODULE_DIR$/app/vendor/propaganistas/laravel-phone" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

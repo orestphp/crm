@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
@@ -42,6 +43,9 @@ Route::middleware('auth')->group(function () {
     // Tickets CRUD
     Route::resource('tickets', TicketController::class);
     Route::get('/tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
+
+    // Customers
+    Route::resource('customers', CustomerController::class);
 });
 
 

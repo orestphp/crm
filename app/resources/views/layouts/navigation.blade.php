@@ -23,6 +23,12 @@
                         {{ __('Users') }}
                     </x-nav-link>
                 </div>
+
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('customers.index')" :active="request()->routeIs('customers.index')">
+                        {{ __('Customers') }}
+                    </x-nav-link>
+                </div>
                 @endrole
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">

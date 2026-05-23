@@ -6,6 +6,7 @@
    - FROM mysql:8.0
    - FROM phpMyAdmin
    - Laravel v10.50.2 (PHP v8.4.21)
+   - (local) Node v22.22.2 (Laravel Breeze for Dashboard/Blade dev)
 
 ## Project Installation
 
@@ -47,9 +48,11 @@ $ make up
    * `docker exec -it crm-app-1 php artisan key:generate`
    * `docker exec -it crm-app-1 php artisan migrate`
    * `docker exec -it crm-app-1 php artisan seed`
+   * Refresh default db: `docker exec -it crm-app-1 php artisan migrate:fresh --seed`
 
 - From the ***/var/www/crm/app*** directory:
    * `npm install & npm run dev`
+   * `npm run build` (after dev)
    * Admin: admin@admin.com password
    * Manager: user@user.com password (all registered users are managers)
     
