@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\TicketApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,3 +18,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('/tickets/statistics', [TicketApiController::class, 'statistics']);
+Route::get('/tickets', [TicketApiController::class, 'index']);
+Route::post('/tickets', [TicketApiController::class, 'store']);

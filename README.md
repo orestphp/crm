@@ -1,12 +1,11 @@
 ## Technologies Used
 
    - Docker
-   - FROM nginx:1.18-alpine
-   - FROM php:8.4-fpm
-   - FROM mysql:8.0
-   - FROM phpMyAdmin
-   - Laravel v10.50.2 (PHP v8.4.21)
-   - (local) Node v22.22.2 (Laravel Breeze for Dashboard/Blade dev)
+   - Nginx:1.18-alpine
+   - MySql:8.0
+   - phpMyAdmin 2
+   - Laravel v10.50.2 (PHP v8.4.21) 
+   - Node 22
 
 ## Project Installation
 
@@ -47,17 +46,17 @@ $ make up
    * `docker exec -it crm-app-1 composer install`
    * `docker exec -it crm-app-1 php artisan key:generate`
    * `docker exec -it crm-app-1 php artisan migrate`
-   * `docker exec -it crm-app-1 php artisan seed`
-   * Refresh default db: `docker exec -it crm-app-1 php artisan migrate:fresh --seed`
-
-- From the ***/var/www/crm/app*** directory:
-   * `npm install & npm run dev`
-   * `npm run build` (after dev)
+   * `docker exec -it crm-app-1 php artisan migrate:fresh --seed`
+   * `docker exec -it crm-app-1 npm install`
+   * `docker exec -it crm-app-1 npm run dev`
    * Admin: admin@admin.com password
-   * Manager: user@user.com password (all registered users are managers)
+   * Manager: user@user.com password (all registered users have role "manager")
     
 ## app
 http://127.0.0.1:8080/
+
+## frontend
+http://127.0.0.1:8082/
 
 ## phpmyadmin
 http://127.0.0.1:8081/
@@ -72,7 +71,7 @@ http://127.0.0.1:8081/
    - `make restart` - rebuild and start containers
    - `docker ps` - list all running containers
    - `docker exec -it <NAME> sh` - Enter container
-   - `docker logs -f <container_id>` - see incomming logs for container
+   - `docker logs -f <container_id>` - see incoming logs for container
    - Show tree Directory/Files in a container: 
      ``` $ find . -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'```
 
