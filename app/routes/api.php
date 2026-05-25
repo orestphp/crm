@@ -15,8 +15,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth')->get('/user', function (Request $request) {
+    return response()->json([
+        'id' => $request->user()->id,
+        'name' => $request->user()->name,
+        'email' => $request->user()->email,
+        'roles' => $request->user()->roles
+    ]);
 });
 
 Route::get('/tickets/statistics', [TicketApiController::class, 'statistics']);

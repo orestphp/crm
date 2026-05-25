@@ -23,20 +23,21 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(LoginRequest $request)
     {
         $request->authenticate();
 
         $request->session()->regenerate();
 
         // API request
-        if ($request->wantsJson() || $request->ajax()) {
+        if ($request->wantsJson() || $request->ajax() || $request->is('api/*') || $request->headers->get('Origin')) {
             return response()->json([
                 'message' => 'Success',
                 'user' => auth()->user()
             ], 200);
         }
 
+        // Це залишається для класичних Blade-форм, якщо вони колись будуть
         return redirect()->intended(RouteServiceProvider::HOME);
     }
 

@@ -20,65 +20,76 @@
     <div class="d-flex justify-content-between align-items-center mb-5 border-bottom pb-3">
         <div>
             <h1 class="fw-bold text-dark">Customer Service</h1>
+            <div id="user-profile-box" class="text-secondary small d-flex align-items-center gap-2" style="display: none !important;">
+                <i class="fa-solid fa-user-gear"></i>
+                <span>User: <strong id="user-name" class="text-dark">-</strong></span>
+                <span id="user-role-badge" class="badge rounded-pill px-2 py-1 text-uppercase font-monospace fs-8"></span>
+            </div>
+            <div class="border-start h-100" style="width: 1px; min-height: 18px; background-color: #dee2e6;"></div>
+            <button id="btn-logout" class="btn btn-link p-0 text-danger text-decoration-none small d-flex align-items-center gap-1">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </button>
         </div>
-        <button id="btn-create-ticket" class="btn btn-primary btn-lg shadow-sm">
+        <button id="btn-create-ticket" class="btn btn-primary btn-lg shadow-sm create-ticket" style="display: none;">
             <i class="fa-solid fa-plus me-2"></i> Create new ticket
         </button>
     </div>
 
     <!-- Statistics -->
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="fw-bold text-secondary mb-0">Tickets Statistics</h5>
-        <div class="btn-group shadow-sm" role="group" aria-label="Period Filter">
-            <button type="button" class="btn btn-outline-primary btn-sm active filter-period-btn" data-period="all_time">Total</button>
-            <button type="button" class="btn btn-outline-primary btn-sm filter-period-btn" data-period="today">Day</button>
-            <button type="button" class="btn btn-outline-primary btn-sm filter-period-btn" data-period="week">Week</button>
-            <button type="button" class="btn btn-outline-primary btn-sm filter-period-btn" data-period="month">Month</button>
+    <div class="statistics-panel" style="display: none;">
+        <div class="d-flex justify-content-between align-items-center mb-3 statistics">
+            <h5 class="fw-bold text-secondary mb-0">Tickets Statistics</h5>
+            <div class="btn-group shadow-sm" role="group" aria-label="Period Filter">
+                <button type="button" class="btn btn-outline-primary btn-sm active filter-period-btn" data-period="all_time">Total</button>
+                <button type="button" class="btn btn-outline-primary btn-sm filter-period-btn" data-period="today">Day</button>
+                <button type="button" class="btn btn-outline-primary btn-sm filter-period-btn" data-period="week">Week</button>
+                <button type="button" class="btn btn-outline-primary btn-sm filter-period-btn" data-period="month">Month</button>
+            </div>
         </div>
-    </div>
 
-    <div id="statistics-panel" class="row g-4 mb-5">
-        <div class="col-md-3">
-            <div class="card stats-card border-0 shadow-sm bg-white h-100">
-                <div class="card-body d-flex align-items-center justify-content-between">
-                    <div>
-                        <h6 class="text-muted text-uppercase small font-weight-bold">Total tickets</h6>
-                        <h3 id="stat-total" class="fw-bold mb-0 text-dark">-</h3>
+        <div class="row g-4 mb-5">
+            <div class="col-md-3">
+                <div class="card stats-card border-0 shadow-sm bg-white h-100">
+                    <div class="card-body d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="text-muted text-uppercase small font-weight-bold">Total tickets</h6>
+                            <h3 id="stat-total" class="fw-bold mb-0 text-dark">-</h3>
+                        </div>
+                        <div class="p-3 bg-primary bg-opacity-10 rounded text-primary"><i class="fa-solid fa-list-check fa-xl"></i></div>
                     </div>
-                    <div class="p-3 bg-primary bg-opacity-10 rounded text-primary"><i class="fa-solid fa-list-check fa-xl"></i></div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card stats-card border-0 shadow-sm bg-white h-100">
-                <div class="card-body d-flex align-items-center justify-content-between">
-                    <div>
-                        <h6 class="text-muted text-uppercase small font-weight-bold">New</h6>
-                        <h3 id="stat-new" class="fw-bold mb-0 text-danger">-</h3>
+            <div class="col-md-3">
+                <div class="card stats-card border-0 shadow-sm bg-white h-100">
+                    <div class="card-body d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="text-muted text-uppercase small font-weight-bold">New</h6>
+                            <h3 id="stat-new" class="fw-bold mb-0 text-danger">-</h3>
+                        </div>
+                        <div class="p-3 bg-danger bg-opacity-10 rounded text-danger"><i class="fa-solid fa-circle-exclamation fa-xl"></i></div>
                     </div>
-                    <div class="p-3 bg-danger bg-opacity-10 rounded text-danger"><i class="fa-solid fa-circle-exclamation fa-xl"></i></div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card stats-card border-0 shadow-sm bg-white h-100">
-                <div class="card-body d-flex align-items-center justify-content-between">
-                    <div>
-                        <h6 class="text-muted text-uppercase small font-weight-bold">In process</h6>
-                        <h3 id="stat-process" class="fw-bold mb-0 text-warning">-</h3>
+            <div class="col-md-3">
+                <div class="card stats-card border-0 shadow-sm bg-white h-100">
+                    <div class="card-body d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="text-muted text-uppercase small font-weight-bold">In process</h6>
+                            <h3 id="stat-process" class="fw-bold mb-0 text-warning">-</h3>
+                        </div>
+                        <div class="p-3 bg-warning bg-opacity-10 rounded text-warning"><i class="fa-solid fa-spinner fa-xl"></i></div>
                     </div>
-                    <div class="p-3 bg-warning bg-opacity-10 rounded text-warning"><i class="fa-solid fa-spinner fa-xl"></i></div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card stats-card border-0 shadow-sm bg-white h-100">
-                <div class="card-body d-flex align-items-center justify-content-between">
-                    <div>
-                        <h6 class="text-muted text-uppercase small font-weight-bold">Processed</h6>
-                        <h3 id="stat-processed" class="fw-bold mb-0 text-success">-</h3>
+            <div class="col-md-3">
+                <div class="card stats-card border-0 shadow-sm bg-white h-100">
+                    <div class="card-body d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="text-muted text-uppercase small font-weight-bold">Processed</h6>
+                            <h3 id="stat-processed" class="fw-bold mb-0 text-success">-</h3>
+                        </div>
+                        <div class="p-3 bg-success bg-opacity-10 rounded text-success"><i class="fa-solid fa-circle-check fa-xl"></i></div>
                     </div>
-                    <div class="p-3 bg-success bg-opacity-10 rounded text-success"><i class="fa-solid fa-circle-check fa-xl"></i></div>
                 </div>
             </div>
         </div>
@@ -97,7 +108,7 @@
                 <table class="table table-hover align-middle mb-0" id="tickets-table">
                     <thead class="table-light text-uppercase fs-7">
                     <tr>
-                        <th class="ps-4" style="width: 80px;">ID</th>
+                        <th class="th-ticket-id ps-4" style="width: 80px;display:none;">ID</th>
                         <th>Description</th>
                         <th style="width: 150px;">Status</th>
                         <th style="width: 180px;">Date</th>
@@ -177,11 +188,76 @@
 <script>
     $(document).ready(function () {
         const API_BASE_URL = "http://127.0.0.1:8080/";
-        const ticketModal = new bootstrap.Modal(document.getElementById('ticketModal'));
 
-        // Initialize data
-        loadTickets();
-        loadStatistics();
+        function getCookie(name) {
+            let matches = document.cookie.match(new RegExp(
+                "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+            ));
+            return matches ? decodeURIComponent(matches[1]) : undefined;
+        }
+
+        // check user auth
+        $.ajaxSetup({
+            xhrFields: {
+                withCredentials: true
+            },
+            headers: {
+                'Accept': 'application/json',
+                'X-XSRF-TOKEN': getCookie('XSRF-TOKEN')
+            },
+            statusCode: {
+                401: function() {
+                    console.warn("401 Unauthorized.");
+                    window.location.href = "/";
+                }
+            }
+        });
+
+        const ticketModal = new bootstrap.Modal(document.getElementById('ticketModal'));
+        // Initialize user
+        let roleName = 'customer';
+        let userId = null;
+        loadCurrentUser();
+
+        function loadCurrentUser() {
+            $.ajax({
+                url: `${API_BASE_URL}api/user`,
+                type: 'GET',
+                dataType: 'json',
+                success: function (user) {
+                    userId = user.id;
+                    $('#user-name').text(user.name);
+                    if (user.roles && user.roles.length > 0) {
+                        roleName = user.roles[0].name; // array
+                    } else if (user.role) {
+                        roleName = user.role; // string
+                    }
+
+                    let badgeClass = 'bg-secondary text-white';
+                    if (roleName === 'admin') badgeClass = 'bg-danger-subtle text-danger border border-danger-subtle';
+                    else if (roleName === 'manager') badgeClass = 'bg-success-subtle text-success border border-success-subtle';
+                    else if (roleName === 'customer') badgeClass = 'bg-blue-subtle text-blue border border-blue-subtle';
+                    $('#user-role-badge').addClass(badgeClass).text(roleName);
+                    $('#user-profile-box').attr('style', 'display: flex !important;');
+
+                    if (roleName === 'customer') {
+                        $('.create-ticket').css('display', 'inline-block');
+                    } else {
+                        $('.th-ticket-id').css('display', 'block');
+                        $('.create-ticket').css('display', 'none');
+
+                        // Statistics
+                        loadStatistics();
+                    }
+
+                    // Tickets
+                    loadTickets();
+                },
+                error: function (xhr) {
+                    console.error("Couldn't load user");
+                }
+            });
+        }
 
         function shortenText(text, maxWords = 10) {
             if (!text) return '';
@@ -215,9 +291,11 @@
 
                             const shortDescription = shortenText(ticket.text, 20);
 
+                            html += `<tr>`;
+                            if(roleName !== 'customer') {
+                                html += `<td class="ps-4 fw-bold text-secondary">#${ticket.id}</td>`;
+                            }
                             html += `
-                                <tr>
-                                    <td class="ps-4 fw-bold text-secondary">#${ticket.id}</td>
                                     <td class="text-wrap text-break">${escapeHtml(shortDescription)}</td>
                                     <td>${statusBadge}</td>
                                     <td class="text-muted small pe-4">${date}</td>
@@ -248,6 +326,8 @@
         let currentPeriod = 'all_time'; // Starting period
 
         function loadStatistics() {
+            $('.statistics-panel').css('display', 'inline-block');
+
             $.ajax({
                 url: `${API_BASE_URL}api/tickets/statistics`,
                 type: 'GET',
@@ -268,8 +348,8 @@
 
             const stats = globalStatsData[period];
 
-            // Ефект плавного згасання цифр під час оновлення
-            $('#statistics-panel h3').fadeOut(100, function() {
+            // Statistic effects
+            $('.statistics-panel h3').fadeOut(100, function() {
                 $('#stat-total').text(stats.total);
                 $('#stat-new').text(stats.new);
                 $('#stat-process').text(stats.in_process);
@@ -401,6 +481,12 @@
                 .replace(/"/g, "&quot;")
                 .replace(/'/g, "&#039;");
         }
+
+        // Logout
+        $('#btn-logout').on('click', function (e) {
+            e.preventDefault();
+            window.location.href = "/";
+        });
     });
 </script>
 </body>
