@@ -17,26 +17,35 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $adminRole = Role::create(['name' => 'admin', 'guard_name' => 'web']);
-        $managerRole = Role::create(['name' => 'manager', 'guard_name' => 'web']);
+        // roles for "web"
+        Role::create(['name' => 'admin', 'guard_name' => 'web']);
+        Role::create(['name' => 'manager', 'guard_name' => 'web']);
+        Role::create(['name' => 'customer', 'guard_name' => 'web']);
+        // roles for "api"
+        Role::create(['name' => 'admin', 'guard_name' => 'api']);
+        Role::create(['name' => 'manager', 'guard_name' => 'api']);
+        Role::create(['name' => 'customer', 'guard_name' => 'api']);
 
-         $admin = User::factory()->create([
-             'name' => 'Admin',
-             'email' => 'admin@admin.com',
-             'password' => Hash::make('password'),
-         ]);
+        // create Admin
+        $admin = User::factory()->create([
+            'name' => 'Admin',
+            'email' => 'admin@admin.com',
+            'password' => Hash::make('password'),
+        ]);
         $admin->assignRole('admin');
 
-         $manager = User::factory()->create([
-             'name' => 'Manager',
-             'email' => 'user@user.com',
-             'password' => Hash::make('password'),
-         ]);
-         $manager->assignRole('manager');
+        // create Managers
+        $manager = User::factory()->create([
+            'name' => 'Manager',
+            'email' => 'user@user.com',
+            'password' => Hash::make('password'),
+        ]);
+        $manager->assignRole('manager');
 
-        Customer::factory(2)->create();
+        // create Customers
+        Customer::factory(3)->create();
 
-
+        // create Tickets
         Ticket::factory(4)->create();
     }
 }

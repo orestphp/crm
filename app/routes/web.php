@@ -39,6 +39,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/users', [UserController::class, 'index'])
         ->middleware('role:admin')
         ->name('users.index');
+    // Delete User
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])
+        ->middleware('role:admin')->name('users.destroy');
 
     // Tickets CRUD
     Route::resource('tickets', TicketController::class);

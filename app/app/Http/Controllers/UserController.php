@@ -15,7 +15,7 @@ class UserController extends Controller
 {
     public function index(): View
     {
-        $users = User::with('roles')->paginate(10);
+        $users = User::with('roles')->get();
 
         return view('users.index', compact('users'));
     }
@@ -46,5 +46,11 @@ class UserController extends Controller
         Auth::logout();
 
         return redirect('login');
+    }
+
+    public function destroy(User $user)
+    {
+        $user->delete();
+        return redirect()->back()->with('success', 'User was deleted successfully.');
     }
 }

@@ -42,6 +42,7 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+        // Available Roles: [admin, manager, customer]
         // Default Role
         $user->assignRole('manager');
 
