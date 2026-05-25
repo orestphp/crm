@@ -33,7 +33,7 @@ Route::middleware('auth')->group(function () {
     // Dashboard
     Route::get('/dashboard', function () {
         return view('dashboard');
-    })->middleware('role:admin,manager')->middleware('verified')->name('dashboard');
+    })->middleware(['verified', 'role:admin|manager'])->name('dashboard');
 
     // Users
     Route::get('/users', [UserController::class, 'index'])
@@ -44,17 +44,17 @@ Route::middleware('auth')->group(function () {
 
     // Tickets CRUD
     Route::resource('tickets', TicketController::class)
-        ->middleware('role:admin, manager')->middleware('verified');
+        ->middleware('role:admin|manager')->middleware('verified');
     Route::delete('/tickets/{ticket}', [TicketController::class, 'update'])
-        ->middleware('role:admin')->middleware('verified')
+        ->middleware(['verified', 'role:admin'])
         ->name('tickets.destroy');
 
     // Customers
     Route::get('customers', [CustomerController::class, 'index'])
-        ->middleware('role:admin, manager')->middleware('verified')
+        ->middleware(['verified', 'role:admin|manager'])
         ->name('customers.index');
-    Route::delete('customers', [CustomerController::class, 'destroy'])
-        ->middleware('role:admin')->middleware('verified')
+    Route::delete('customers/{customer}', [CustomerController::class, 'destroy'])
+        ->middleware(['verified', 'role:admin'])
         ->name('customers.destroy');
 });
 

@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Customer;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +18,7 @@ class TicketFactory extends Factory
     public function definition(): array
     {
         return [
-            'customer_id' => \App\Models\Customer::inRandomOrder()->first()->id ?? 1,
+            'customer_id' => Customer::inRandomOrder()->first()->id ?? 1,
             'text' => $this->faker->paragraph(),
             'status' => $this->faker->randomElement(['new', 'in process', 'processed']),
             'created_at' => now()->subDays(rand(1, 30)),

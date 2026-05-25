@@ -18,9 +18,8 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // roles for "web"
-        Role::create(['name' => 'admin', 'guard_name' => 'web']);
-        Role::create(['name' => 'manager', 'guard_name' => 'web']);
-        Role::create(['name' => 'customer', 'guard_name' => 'web']);
+        $adminWebRole = Role::create(['name' => 'admin', 'guard_name' => 'web']);
+        $managerWebRole = Role::create(['name' => 'manager', 'guard_name' => 'web']);
         // roles for "api"
         Role::create(['name' => 'admin', 'guard_name' => 'api']);
         Role::create(['name' => 'manager', 'guard_name' => 'api']);
@@ -32,7 +31,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@admin.com',
             'password' => Hash::make('password'),
         ]);
-        $admin->assignRole('admin');
+        $admin->assignRole($adminWebRole);
 
         // create Managers
         $manager = User::factory()->create([
@@ -40,7 +39,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'user@user.com',
             'password' => Hash::make('password'),
         ]);
-        $manager->assignRole('manager');
+        $manager->assignRole($managerWebRole);
 
         // create Customers
         Customer::factory(3)->create();
