@@ -30,14 +30,13 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         // API request
-        if ($request->wantsJson() || $request->ajax() || $request->is('api/*') || $request->headers->get('Origin')) {
+        if ($request->wantsJson() || $request->ajax()) {
             return response()->json([
                 'message' => 'Success',
                 'user' => auth()->user()
             ], 200);
         }
 
-        // Це залишається для класичних Blade-форм, якщо вони колись будуть
         return redirect()->intended(RouteServiceProvider::HOME);
     }
 

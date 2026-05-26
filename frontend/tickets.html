@@ -145,7 +145,7 @@
                     <!-- text/description -->
                     <div class="mb-4">
                         <label for="text" class="form-label fw-semibold">Description <span class="text-danger">*</span></label>
-                        <textarea class="form-control" id="text" name="text" rows="5" placeholder="Детально опишіть суть вашої проблеми..." required></textarea>
+                        <textarea class="form-control" id="text" name="text" rows="5" placeholder="Describe your problem ..." required></textarea>
                         <div class="invalid-feedback" id="error-text">Field can not be empty.</div>
                     </div>
 
@@ -160,6 +160,11 @@
                     </div>
 
                     <!-- Attach Files -->
+                    <div class="mb-4 d-none" id="existing-attachments-group">
+                        <label class="form-label fw-semibold text-secondary">Attached files:</label>
+                        <div id="existing-attachments-list" class="list-group shadow-sm">
+                        </div>
+                    </div>
                     <div class="mb-2">
                         <label for="attachments" class="form-label fw-semibold">Attache files / Screenshots</label>
                         <div class="input-group">
@@ -213,7 +218,6 @@
             }
         });
 
-        const ticketModal = new bootstrap.Modal(document.getElementById('ticketModal'));
         // Initialize user
         let roleName = 'customer';
         let userId = null;
@@ -259,20 +263,16 @@
             });
         }
 
-        function shortenText(text, maxWords = 10) {
-            if (!text) return '';
-            const words = text.split(/\s+/);
-            if (words.length <= maxWords) {
-                return text;
-            }
-            return words.slice(0, maxWords).join(' ') + '...';
-        }
-
-        // GET tickets
+        // ---------------------------------- Tickets -------------------------------------
         function loadTickets() {
+            let requestData = {};
+            if (roleName === 'customer' && userId) {
+                requestData.customer_id = userId;
+            }
             $.ajax({
                 url: `${API_BASE_URL}api/tickets`,
                 type: 'GET',
+                data: requestData,
                 dataType: 'json',
                 success: function (response) {
                     let html = '';
@@ -286,11 +286,12 @@
                             if (ticket.status === 'new') statusBadge = '<span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-3">New</span>';
                             else if (ticket.status === 'in process') statusBadge = '<span class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill px-3">In Process</span>';
                             else statusBadge = '<span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3">Processed</span>';
-
                             let date = new Date(ticket.created_at).toLocaleString('uk-UA', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute:'2-digit' });
-
                             const shortDescription = shortenText(ticket.text, 20);
-
+                            let showEditButton = true;
+                            if ((roleName === 'customer' && ticket.status === 'in process') || ticket.status === 'processed') {
+                                showEditButton = false;
+                            }
                             html += `<tr>`;
                             if(roleName !== 'customer') {
                                 html += `<td class="ps-4 fw-bold text-secondary">#${ticket.id}</td>`;
@@ -300,6 +301,7 @@
                                     <td>${statusBadge}</td>
                                     <td class="text-muted small pe-4">${date}</td>
                                     <td class="text-end pe-4">
+                                        ${showEditButton ? `
                                         <button class="btn btn-sm btn-outline-secondary edit-ticket-btn"
                                                 data-id="${ticket.id}"
                                                 data-text="${encodeURIComponent(ticket.text)}"
@@ -307,6 +309,7 @@
                                                 title="Edit Ticket">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </button>
+                                        ` : ''}
                                     </td>
                                 </tr>
                             `;
@@ -321,7 +324,16 @@
             });
         }
 
-        // GET statistics
+        function shortenText(text, maxWords = 10) {
+            if (!text) return '';
+            const words = text.split(/\s+/);
+            if (words.length <= maxWords) {
+                return text;
+            }
+            return words.slice(0, maxWords).join(' ') + '...';
+        }
+
+        //---------------------------  Statistics  -----------------------------
         let globalStatsData = null; // json structure
         let currentPeriod = 'all_time'; // Starting period
 
@@ -367,46 +379,46 @@
             updateStatsDOM(currentPeriod);
         });
 
-        // Reset form
-        $('#btn-create-ticket').on('click', function () {
-            $('#ticket-form')[0].reset();
-            ticketModal.show();
-        });
+        //------------------- Edit/Create Ticket modal ---------------------------------
+        const ticketModal = new bootstrap.Modal(document.getElementById('ticketModal'));
 
         // POST / PUT: Submit form (Multipart FormData for files)
         $('#ticket-form').on('submit', function (e) {
             e.preventDefault();
 
+            $('#text').removeClass('is-invalid');
+            $('#error-text').text('');
             const id = $('#ticket-id').val();
             const isEdit = id !== '';
-
             let formData = new FormData(this);
-
-            // Laravel Imitation of PUT/PATCH via FormData
             if (isEdit) {
                 formData.append('_method', 'PUT');
             }
 
             // URL config
-            let ajaxUrl = isEdit ? `${API_BASE_URL}${id}` : API_BASE_URL;
+            let ajaxUrl = isEdit ? `${API_BASE_URL}api/tickets/${id}` : `${API_BASE_URL}api/tickets`;
 
             // Freeze UI while loading
             $('#btn-submit').prop('disabled', true);
             $('#submit-spinner').removeClass('spinner-wrapper');
 
+            // Save Ticket
             $.ajax({
-                url: API_BASE_URL,
+                url: ajaxUrl,
                 type: 'POST',
                 data: formData,
                 processData: false,
                 contentType: false,
                 success: function (response) {
                     ticketModal.hide();
-                    showAlert('Ticket successfully created!', 'success');
+                    const successText = isEdit ? 'Ticket successfully updated!' : 'Ticket successfully created!';
+                    showAlert(successText, 'success');
 
                     // Reload data
                     loadTickets();
-                    loadStatistics();
+                    if (roleName !== 'customer') {
+                        loadStatistics();
+                    }
                 },
                 error: function (xhr) {
                     let errorMsg = 'Could`t send data.';
@@ -424,32 +436,83 @@
             });
         });
 
-        // Create ticket
+        // Create ticket in Modal
         $('#btn-create-ticket').on('click', function () {
             $('#ticketModalLabel').text('Create New Ticket');
             $('#ticket-form')[0].reset();
             $('#ticket-id').val('');
+            $('#existing-attachments-group').addClass('d-none');
+            $('#existing-attachments-list').html('');
             $('#status-group').addClass('d-none');
             $('#submit-btn-text').text('Save Ticket');
             ticketModal.show();
         });
 
-        // Edit ticket
+        // Edit ticket in Modal
         $(document).on('click', '.edit-ticket-btn', function () {
+            $('#attachments').val('');
             const id = $(this).data('id');
             const text = decodeURIComponent($(this).data('text'));
             const status = $(this).data('status');
 
-            $('#ticketModalLabel').text(`Edit Ticket #${id}`);
+            const editTicketId = (roleName === 'customer') ? '' : `#${id}`;
+            $('#ticketModalLabel').text(`Edit Ticket ${editTicketId}`);
             $('#ticket-id').val(id);
             $('#text').val(text);
             $('#status').val(status);
             // show status group
-            $('#status-group').removeClass('d-none');
-            // change submit button text
+            if (roleName === 'customer') {
+                $('#status-group').addClass('d-none');
+            } else {
+                $('#status-group').removeClass('d-none');
+            }
             $('#submit-btn-text').text('Update Ticket');
 
+            $('#existing-attachments-group').addClass('d-none');
+            $('#existing-attachments-list').html('<div class="list-group-item text-muted small"><i class="fa-solid fa-spinner fa-spin me-2"></i> Завантаження файлів...</div>');
+
             ticketModal.show();
+
+            // get files
+            $.ajax({
+                url: `${API_BASE_URL}api/tickets/${id}`,
+                type: 'GET',
+                dataType: 'json',
+                success: function (ticket) {
+                    let mediaFiles = ticket.media ? ticket.media : [];
+
+                    if (mediaFiles.length > 0) {
+                        let filesHtml = '';
+
+                        mediaFiles.forEach(file => {
+                            let fileIcon = 'fa-file';
+                            if (file.mime_type && file.mime_type.startsWith('image/')) fileIcon = 'fa-file-image text-success';
+                            else if (file.mime_type === 'application/pdf') fileIcon = 'fa-file-pdf text-danger';
+
+                            filesHtml += `
+                        <div class="list-group-item d-flex justify-content-between align-items-center py-2">
+                            <div class="d-flex align-items-center gap-2 text-truncate">
+                                <i class="fa-solid ${fileIcon} fs-5"></i>
+                                <a href="${file.original_url}" target="_blank" class="text-decoration-none text-dark fw-medium small text-truncate" title="Переглянути файл">
+                                    ${escapeHtml(file.file_name)}
+                                </a>
+                                <span class="text-muted muted ps-2" style="font-size: 11px;">(${(file.size / 1024 / 1024).toFixed(2)} MB)</span>
+                            </div>
+                            <span class="badge bg-light text-secondary border rounded-pill font-monospace" style="font-size: 10px;">Збережено</span>
+                        </div>
+                    `;
+                        });
+                        $('#existing-attachments-list').html(filesHtml);
+                        $('#existing-attachments-group').removeClass('d-none');
+                    } else {
+                        // hide block if no files
+                        $('#existing-attachments-group').addClass('d-none');
+                    }
+                },
+                error: function () {
+                    $('#existing-attachments-list').html('<div class="list-group-item text-danger small">Не вдалося завантажити файли.</div>');
+                }
+            });
         });
 
         // Bootstrap show alert

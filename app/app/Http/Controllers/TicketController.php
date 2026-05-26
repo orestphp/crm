@@ -65,8 +65,7 @@ class TicketController extends Controller
      */
     public function edit(Ticket $ticket)
     {
-        $ticket->load('customer');
-
+        $ticket->load(['customer', 'media']);
         return view('tickets.edit', compact('ticket'));
     }
 

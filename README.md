@@ -52,6 +52,9 @@ $ make up
    * Admin: admin@admin.com password
    * Manager: user@user.com password (all registered users have role "manager")
     
+###NOTE: ***"app" and "frontend" test in different Browsers***
+( By the reason that Auth cookie is stored in browser for both "app" and "frontend" )
+
 ## app
 http://127.0.0.1:8080/
 
@@ -76,5 +79,8 @@ http://127.0.0.1:8081/
      ``` $ find . -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'```
 
 ## Development Notes
-  - Project architecture comes with Docker environment and Laravel Application.
-  - 
+  - Project architecture comes with Docker environment and Laravel Breeze Dashboard for "web" and "api".
+  - Admin and Managers can use both "web" and "api", Customers only "api"
+  - For authentication, we use Laravel Sanctum (spatie/laravel-permission)
+  - For media files storage, we use Laravel Media Library (spatie/laravel-medialibrary)
+  

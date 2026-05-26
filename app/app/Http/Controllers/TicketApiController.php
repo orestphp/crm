@@ -13,9 +13,18 @@ class TicketApiController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $tickets = Ticket::with('customer')->get();
+        $user = $request->user();
+        $tickets = [];
+        if ($user->hasRole('customer')) {
+            $tickets = Ticket::query()
+                ->when($user->hasRole('customer'), function ($query) use ($user) {
+                    return $query->where('customer_id', $user->id);
+                })->get();
+        } else {
+            $tickets = Ticket::with('customer')->get();
+        }
 
         return response()->json($tickets);
     }
@@ -31,52 +40,58 @@ class TicketApiController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Save: Ticket and Files.
      */
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'customer_id' => ['required', 'integer', 'exists:customers,id'],
-            'text' => ['required', 'string', 'min:10'],
-        ], [
-            'customer_id.required' => 'Please, choose a Customer',
-            'customer_id.exists' => 'Chosen Customer does not exists',
-            'text.required' => 'Description field is required',
-            'text.min' => 'Description must be at least 10 characters long',
+        $request->validate([
+            'text' => 'required|string|min:5',
+            'attachments.*' => 'sometimes|file|max:10240', // max 10MB per file
         ]);
 
-        Ticket::create($validatedData);
+        $ticket = Ticket::create([
+            'text' => $request->text,
+            'customer_id' => $request->user()->id,
+            'status' => 'new'
+        ]);
 
-        return redirect()
-            ->route('tickets.index')
-            ->with('success', 'New ticket successfully generated and added to the queue!');
+        if ($request->hasFile('attachments')) {
+            foreach ($request->file('attachments') as $file) {
+                $ticket->addMedia($file)
+                    ->toMediaCollection('attachments');
+            }
+        }
+
+        return response()->json([
+            'message' => 'Ticket created successfully',
+            'ticket'  => $ticket->load('media')
+        ], 201);
     }
 
     public function statistics(): JsonResponse
     {
         return response()->json([
-            // Статистика за весь час
             'all_time' => [
                 'total'      => Ticket::count(),
                 'new'        => Ticket::newTickets()->count(),
                 'in_process' => Ticket::inProcess()->count(),
                 'processed'  => Ticket::processed()->count(),
             ],
-            // За останню добу (24 години)
+
             'today' => [
                 'total'      => Ticket::createdToday()->count(),
                 'new'        => Ticket::createdToday()->newTickets()->count(),
                 'in_process' => Ticket::createdToday()->inProcess()->count(),
                 'processed'  => Ticket::createdToday()->processed()->count(),
             ],
-            // За останній тиждень (7 днів)
+
             'week' => [
                 'total'      => Ticket::createdThisWeek()->count(),
                 'new'        => Ticket::createdThisWeek()->newTickets()->count(),
                 'in_process' => Ticket::createdThisWeek()->inProcess()->count(),
                 'processed'  => Ticket::createdThisWeek()->processed()->count(),
             ],
-            // За останній місяць (30 днів)
+
             'month' => [
                 'total'      => Ticket::createdThisMonth()->count(),
                 'new'        => Ticket::createdThisMonth()->newTickets()->count(),
@@ -93,7 +108,7 @@ class TicketApiController extends Controller
     {
         $ticket->load('customer');
 
-        return view('tickets.show', compact('ticket'));
+        return response()->json($ticket->load('media'));
     }
 
     /**
@@ -111,21 +126,43 @@ class TicketApiController extends Controller
      */
     public function update(Request $request, Ticket $ticket)
     {
-        $validatedData = $request->validate([
-            'text' => ['required', 'string', 'min:10'],
-            'status' => ['required', 'in:new,in process,processed'],
-        ], [
-            'text.required' => 'Description field is required',
-            'text.min' => 'Description must be at least 10 characters long',
-            'status.required' => 'Status is required',
-            'status.in' => 'Wrong status',
+        $user = $request->user();
+
+        $validated = $request->validate([
+            'text' => 'required|string|min:5',
+            'status' => 'sometimes|string|in:new,in process,processed',
+            'attachments.*' => 'sometimes|file|max:10240', // max 10MB per file
         ]);
 
-        $ticket->update($validatedData);
+        // Check Permissions
+        if ($user->hasRole('customer')) {
+            if ($ticket->customer_id !== $user->id) {
+                return response()->json(['message' => 'Unauthorized action.'], 403);
+            }
+            // customer can't change status
+            unset($validated['status']);
+        } else {
+            // Admin or manager edits the ticket. They usually only change the status.
+            unset($validated['text']);
 
-        return redirect()
-            ->route('tickets.index')
-            ->with('success', "Ticket #{$ticket->id} successfully updated!");
+        }
+
+        // Update ticket
+        $ticket->update($validated);
+
+        // Files (via Edit)
+        if ($request->hasFile('attachments')) {
+            foreach ($request->file('attachments') as $file) {
+                $ticket->addMedia($file)
+                    ->toMediaCollection('attachments');
+            }
+        }
+
+        // Response
+        return response()->json([
+            'message' => 'Ticket updated successfully',
+            'ticket'  => $ticket->load('media')
+        ], 200);
     }
 
     /**

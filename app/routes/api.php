@@ -24,6 +24,13 @@ Route::middleware('auth')->get('/user', function (Request $request) {
     ]);
 });
 
-Route::get('/tickets/statistics', [TicketApiController::class, 'statistics']);
-Route::get('/tickets', [TicketApiController::class, 'index']);
-Route::post('/tickets', [TicketApiController::class, 'store']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('tickets/statistics', [TicketApiController::class, 'statistics']);
+    Route::get('tickets/{ticket}', [TicketApiController::class, 'show']);
+    Route::put('tickets/{ticket}', [TicketApiController::class, 'update']);
+    Route::get('/tickets', [TicketApiController::class, 'index']);
+    Route::post('/tickets', [TicketApiController::class, 'store']);
+});
+
+
+

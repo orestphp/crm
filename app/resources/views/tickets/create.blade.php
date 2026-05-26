@@ -13,24 +13,6 @@
                 @csrf
 
                     <div class="mb-6">
-                        <label for="customer_id" class="block text-sm font-medium text-gray-700 mb-2">
-                            Виберіть клієнта <span class="text-red-500">*</span>
-                        </label>
-                        <select name="customer_id" id="customer_id" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('customer_id') border-red-500 @enderror">
-                            <option value="">Choose Customer</option>
-                            @foreach($customers as $customer)
-                                <option value="{{ $customer->id }}" {{ old('customer_id') == $customer->id ? 'selected' : '' }}>
-                                    {{ $customer->name }} ({{ $customer->email }})
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('customer_id')
-                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-
-                    <div class="mb-6">
                         <label for="text" class="block text-sm font-medium text-gray-700 mb-2">
                             Description <span class="text-red-500">*</span>
                         </label>

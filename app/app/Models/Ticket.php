@@ -5,11 +5,14 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use \Illuminate\Database\Eloquent\Model;
 
-class Ticket extends Model
+class Ticket extends Model implements HasMedia
 {
+    use InteractsWithMedia;
     use HasFactory;
 
     protected $fillable = [
@@ -17,6 +20,12 @@ class Ticket extends Model
         'text',
         'status'
     ];
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('attachments')
+            ->useDisk('public'); // save to - storage/app/public/
+    }
 
     /**
      * Get the customer that owns the Ticket
@@ -44,7 +53,7 @@ class Ticket extends Model
         return $query->where('created_at', '>=', Carbon::now()->subMonth());
     }
 
-    // Status
+    // sort by Status
     public function scopeNewTickets(Builder $query): Builder
     {
         return $query->where('status', 'new');
