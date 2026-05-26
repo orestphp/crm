@@ -50,7 +50,8 @@ $ make up
    * `docker exec -it crm-app-1 npm install`
    * `docker exec -it crm-app-1 npm run dev`
    * Admin: admin@admin.com password
-   * Manager: user@user.com password (all registered users have role "manager")
+   * Manager: user@user.com password (all registered users via "web" have role "manager")
+    * Customer: all customers' have same "password"
     
 ###NOTE: ***"app" and "frontend" test in different Browsers***
 ( By the reason that Auth cookie is stored in browser for both "app" and "frontend" )
